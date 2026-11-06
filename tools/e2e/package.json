@@ -1,0 +1,13 @@
+{
+  "name": "menu-e2e",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Menu 视觉与移动端验收脚本（Playwright + 本机 Edge/Chrome）",
+  "type": "commonjs",
+  "scripts": {
+    "shots": "node screenshots.cjs"
+  },
+  "dependencies": {
+    "playwright": "^1.65.0"
+  }
+}

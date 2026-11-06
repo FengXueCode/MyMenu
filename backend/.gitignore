@@ -1,0 +1,35 @@
+# 文件：.gitignore
+### Maven ###
+target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### 日志 ###
+logs/
+*.log
+*.log.gz
+
+### IDE ###
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.classpath
+.project
+.settings/
+
+### 系统 ###
+.DS_Store
+Thumbs.db
+
+### 环境变量/本地工具 ###
+.env
+.tools/
+
+### 本地敏感数据：AI 主密钥、JWT 密钥、AI 生成图片、数据库文件 ###
+data/
+!data/.gitkeep
+
+### 其他 ###
+*.tmp
+*.bak

@@ -1,0 +1,38 @@
+# 本地开发环境：MySQL 8（本机 3306，库 recipe_menu）；Redis 可选
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:recipe_menu}?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&connectionTimeZone=Asia/Shanghai&rewriteBatchedStatements=true
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:FengXue@}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: MenuHikariPool
+      minimum-idle: 2
+      maximum-pool-size: 10
+      connection-timeout: 5000
+      validation-timeout: 3000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
+      database: ${REDIS_DATABASE:0}
+      timeout: 1500ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: 1500ms
+
+logging:
+  level:
+    com.fengxue.menu: DEBUG
+    com.fengxue.menu.mapper: DEBUG
+
+springdoc:
+  swagger-ui:
+    enabled: true

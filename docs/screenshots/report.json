@@ -1,0 +1,259 @@
+{
+  "desktop": [
+    {
+      "page": "home",
+      "path": "/",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 1784,
+        "bodyScrollWidth": 1280
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "recipes",
+      "path": "/recipes",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 2124,
+        "bodyScrollWidth": 1280
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "detail",
+      "path": "/recipes/20",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 1744,
+        "bodyScrollWidth": 1280
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "today",
+      "path": "/today",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 1563,
+        "bodyScrollWidth": 1280
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "import",
+      "path": "/import",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 900,
+        "bodyScrollWidth": 1280
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "me",
+      "path": "/me",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 915,
+        "bodyScrollWidth": 1280
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "preferences",
+      "path": "/settings/preferences",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 1523,
+        "bodyScrollWidth": 1280
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "ai-settings",
+      "path": "/settings/ai",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 900,
+        "bodyScrollWidth": 1280
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "login",
+      "path": "/login",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "scrollHeight": 900,
+        "bodyScrollWidth": 1280
+      },
+      "consoleErrors": []
+    }
+  ],
+  "mobile": [
+    {
+      "page": "home",
+      "path": "/",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 3214,
+        "bodyScrollWidth": 390
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "home-full",
+      "path": "/",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 3214,
+        "bodyScrollWidth": 390
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "recipes",
+      "path": "/recipes",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 4998,
+        "bodyScrollWidth": 390
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "detail",
+      "path": "/recipes/20",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 1559,
+        "bodyScrollWidth": 390
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "detail-ingredients",
+      "path": "/recipes/20",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 1559,
+        "bodyScrollWidth": 390
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "today",
+      "path": "/today",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 1659,
+        "bodyScrollWidth": 390
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "import",
+      "path": "/import",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "bodyScrollWidth": 390
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "me",
+      "path": "/me",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 864,
+        "bodyScrollWidth": 390
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "preferences",
+      "path": "/settings/preferences",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 1448,
+        "bodyScrollWidth": 390
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "ai-settings",
+      "path": "/settings/ai",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "bodyScrollWidth": 390
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "recipes-filter",
+      "path": "/recipes",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 4998,
+        "bodyScrollWidth": 390
+      },
+      "consoleErrors": []
+    },
+    {
+      "page": "login",
+      "path": "/login",
+      "overflowX": false,
+      "metrics": {
+        "scrollWidth": 390,
+        "clientWidth": 390,
+        "scrollHeight": 844,
+        "bodyScrollWidth": 390
+      },
+      "consoleErrors": []
+    }
+  ],
+  "consoleErrors": []
+}

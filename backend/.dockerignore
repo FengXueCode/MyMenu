@@ -1,0 +1,14 @@
+# 文件：.dockerignore
+target/
+.git/
+.gitignore
+.idea/
+.vscode/
+*.iml
+*.log
+logs/
+.tools/
+.env
+README.md
+docker-compose.yml
+Dockerfile

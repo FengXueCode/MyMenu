@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="#FAF6EE" />
+  <rect x="7" y="7" width="50" height="50" rx="10" fill="#D8503C" />
+  <rect x="9" y="9" width="46" height="46" rx="8" fill="none" stroke="#FAF6EE" stroke-opacity=".55" stroke-width="1.5" />
+  <text x="32" y="43" text-anchor="middle" font-family="Songti SC, Source Han Serif SC, SimSun, serif" font-size="30" fill="#FAF6EE">灶</text>
+</svg>

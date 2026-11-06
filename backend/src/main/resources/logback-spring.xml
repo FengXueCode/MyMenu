@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  必须使用 logback-spring.xml（带 -spring 后缀），Spring Boot 才会把
+  springProperty 与 application.yml 中的配置属性关联起来。
+  文件路径、滚动策略参数均来自 application.yml，不在这里硬编码业务路径。
+-->
+<configuration scan="false">
+
+    <!-- 从 application.yml 读取日志配置 -->
+    <springProperty scope="context" name="LOG_FILE" source="logging.file.name" defaultValue="logs/app.log"/>
+    <springProperty scope="context" name="LOG_FILE_PATTERN" source="logging.logback.rollingpolicy.file-name-pattern"
+                    defaultValue="logs/app.%d{yyyy-MM-dd}.%i.log.gz"/>
+    <springProperty scope="context" name="LOG_MAX_FILE_SIZE" source="logging.logback.rollingpolicy.max-file-size"
+                    defaultValue="100MB"/>
+    <springProperty scope="context" name="LOG_MAX_HISTORY" source="logging.logback.rollingpolicy.max-history"
+                    defaultValue="30"/>
+    <springProperty scope="context" name="LOG_TOTAL_SIZE_CAP" source="logging.logback.rollingpolicy.total-size-cap"
+                    defaultValue="3GB"/>
+
+    <!-- 格式：时间、级别、线程、类名、traceId(MDC 预留)、消息 -->
+    <property name="LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} [traceId=%X{traceId:-}] - %msg%n"/>
+
+    <!-- 控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 文件输出：按天 + 按大小滚动，保留 30 天，单文件最大 100MB -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_FILE}</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_FILE_PATTERN}</fileNamePattern>
+            <maxFileSize>${LOG_MAX_FILE_SIZE}</maxFileSize>
+            <maxHistory>${LOG_MAX_HISTORY}</maxHistory>
+            <totalSizeCap>${LOG_TOTAL_SIZE_CAP}</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>
