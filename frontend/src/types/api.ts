@@ -202,6 +202,7 @@ export type ProviderType =
   | 'qwen'
   | 'moonshot'
   | 'siliconflow'
+  | 'opencode'
   | 'ollama'
   | 'custom'
 

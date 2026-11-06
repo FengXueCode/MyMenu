@@ -20,8 +20,8 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class AiProviderService {
 
-    private static final Set<String> PROVIDER_TYPES =
-            Set.of("openai", "deepseek", "qwen", "moonshot", "siliconflow", "ollama", "custom");
+    private static final Set<String> PROVIDER_TYPES = Set.of(
+            "openai", "deepseek", "qwen", "moonshot", "siliconflow", "opencode", "ollama", "custom");
     private static final Pattern BASE_URL = Pattern.compile("^https?://[^\\s]+$");
 
     private final AiProviderMapper providerMapper;

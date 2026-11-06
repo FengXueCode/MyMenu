@@ -19,6 +19,8 @@ public final class ProviderPresets {
                 new AiDtos.Preset("moonshot", "Kimi / Moonshot", "https://api.moonshot.cn/v1", "moonshot-v1-8k", ""),
                 new AiDtos.Preset("siliconflow", "硅基流动", "https://api.siliconflow.cn/v1",
                         "Qwen/Qwen2.5-7B-Instruct", "Kwai-Kolors/Kolors"),
+                new AiDtos.Preset("opencode", "OpenCode Zen", "https://opencode.ai/inference/openai/v1",
+                        "deepseek-v4.1-flash", ""),
                 new AiDtos.Preset("ollama", "Ollama（本地）", "http://localhost:11434/v1", "llama3.1", ""),
                 new AiDtos.Preset("custom", "自定义 OpenAI 兼容", "", "", ""));
     }

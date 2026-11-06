@@ -13,7 +13,7 @@
 - **账号**：注册 / 登录 / JWT 鉴权，演示账号一键体验
 - **菜谱库**：搜索、分类、荤素筛选、分页；内置 20 道示例菜谱 + 8 个系统分类
 - **视频导入**：粘贴 B 站 / 抖音链接或整段分享文案 → 解析标题/封面/简介 → AI 结构化 → 可编辑预览 → 保存
-- **AI 配置**：前端可添加多套 OpenAI 兼容配置（OpenAI / DeepSeek / 通义千问 / Kimi / 硅基流动 / Ollama / 自定义），
+- **AI 配置**：前端可添加多套 OpenAI 兼容配置（OpenAI / DeepSeek / 通义千问 / Kimi / 硅基流动 / OpenCode Zen / Ollama / 自定义），
   支持测试连接、设为默认；**API Key 仅在后端本地加密保存**
 - **AI 能力**：菜谱摘要（卖点 + 配菜 + 搭配建议）、AI 生成菜品配图（未配置图像模型时用本地风格化封面兜底）
 - **用餐偏好**：用餐人数、每日餐数、每餐菜品数、荤素配比、忌口食材、辣度、最长烹饪时间、偏好分类
@@ -130,6 +130,26 @@ Vite 代理会统一改写 `Origin`，后端 CORS 默认也放行 `localhost` �
 3. 保存后可「测试连接」，并设为默认配置。
 
 支持任意 **OpenAI 兼容** 接口：`{baseUrl}/chat/completions`、`{baseUrl}/images/generations`。
+
+### OpenCode Zen 特别说明
+
+OpenCode Console 提供 OpenAI 兼容接口，已内置预设：
+
+- Base URL：`https://opencode.ai/inference/openai/v1`
+- 协议：`POST /chat/completions`
+- Key：OpenCode Console 的 Personal API Key
+
+但请注意：**OpenCode 的免费模型只允许 OpenCode 客户端调用，外部应用即使带 Key 也会被拒绝**。
+官方文档明确写着 “Free-tier chat models are only available from within OpenCode; other clients receive HTTP 403,
+even with an API key.”（见 [OpenCode Inference API 文档](https://opencode.ai/v2/docs/console/api/inference/)）。
+所以不要把 `*-free` 模型填进本网站；付费模型或 OpenCode Go 订阅可以正常使用这个预设。
+
+### 想免费先测试 AI 功能？
+
+1. **本地 Ollama（推荐，免费且数据不出本机）**：安装 [Ollama](https://ollama.com/) 后执行
+   `ollama pull qwen2.5:7b`，在 AI 配置中选择「Ollama（本地）」，Key 留空；
+2. **仓库自带 Mock AI**：不需要任何模型/额度，验证导入 → AI 提取 → 摘要 → 配图全链路；
+3. 硅基流动等提供免费额度的 OpenAI 兼容服务，选择「自定义」填对应 Base URL 与模型。
 
 ### 没有真实 Key 时本地自测
 

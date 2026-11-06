@@ -85,7 +85,8 @@ bilibili 的 iframe：`https://player.bilibili.com/player.html?bvid={bvid}&page=
 AiProviderInput = { name, providerType, baseUrl, chatModel, imageModel?,
                     apiKey?, enabled?, isDefault? }
 ```
-providerType 预设：`openai|deepseek|qwen|moonshot|siliconflow|ollama|custom`
+providerType 预设：`openai|deepseek|qwen|moonshot|siliconflow|opencode|ollama|custom`
+（`opencode` = OpenCode Zen，Base URL `https://opencode.ai/inference/openai/v1`；其免费模型仅限 OpenCode 客户端调用，外部应用会 403）
 
 `POST /api/ai/recipes/{id}/summary` → `{ aiSummary, ingredientsBrief: string[], pairing: string }`
 `POST /api/ai/recipes/{id}/image` → `{ coverUrl, aiGenerated: boolean, warning?: string }`

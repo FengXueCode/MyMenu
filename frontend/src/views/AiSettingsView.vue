@@ -52,12 +52,19 @@ const PROVIDER_PRESETS: Record<
     imageModel: 'Kwai-Kolors/Kolors',
     hint: '国内多模型聚合，含图像模型',
   },
+  opencode: {
+    label: 'OpenCode Zen',
+    baseUrl: 'https://opencode.ai/inference/openai/v1',
+    chatModel: 'deepseek-v4.1-flash',
+    imageModel: '',
+    hint: 'OpenAI 兼容。注意：OpenCode 免费模型只允许 OpenCode 客户端调用，外部应用会 403；这里请用付费模型/Go 订阅。免费测试建议用本地 Ollama。',
+  },
   ollama: {
     label: 'Ollama（本地）',
     baseUrl: 'http://localhost:11434/v1',
     chatModel: 'qwen2.5:7b',
     imageModel: '',
-    hint: '本机运行，通常无需 API Key',
+    hint: '本机运行、免费且数据不出本机，通常无需 API Key；适合先做功能测试',
   },
   custom: {
     label: '自定义（OpenAI 兼容）',
