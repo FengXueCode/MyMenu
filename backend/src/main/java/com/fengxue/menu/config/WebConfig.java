@@ -24,7 +24,11 @@ public class WebConfig implements WebMvcConfigurer {
                      @Value("${app.cors.allowed-origin-patterns:}") String allowedOrigins) {
         this.authInterceptor = authInterceptor;
         this.uploadDir = uploadDir;
-        this.allowedOrigins = allowedOrigins.isBlank() ? new String[0] : allowedOrigins.split(",");
+        this.allowedOrigins = allowedOrigins.isBlank() ? new String[0]
+                : java.util.Arrays.stream(allowedOrigins.split(","))
+                        .map(String::trim)
+                        .filter(origin -> !origin.isEmpty())
+                        .toArray(String[]::new);
     }
 
     @Override

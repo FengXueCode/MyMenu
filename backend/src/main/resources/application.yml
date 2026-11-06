@@ -84,4 +84,6 @@ app:
     max-bytes: ${IMPORT_MAX_BYTES:2097152}
     max-redirects: ${IMPORT_MAX_REDIRECTS:3}
   cors:
-    allowed-origin-patterns: ${CORS_ORIGINS:http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173}
+    # 前端开发服务器可能通过 localhost、127.0.0.1、局域网 IP、主机名访问；
+    # 默认放行本机与私有网段，生产环境用 CORS_ORIGINS 收紧。
+    allowed-origin-patterns: ${CORS_ORIGINS:http://localhost:*,http://127.0.0.1:*,http://192.168.*:*,http://10.*:*,http://172.*:*}

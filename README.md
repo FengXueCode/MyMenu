@@ -108,6 +108,11 @@ npm run dev
 
 打开 <http://localhost:5173>。Vite 已配置 `/api` 代理到 `http://localhost:8080`。
 
+**手机/局域网访问**：Vite 已开启 `host: true`，手机与电脑在同一局域网时打开
+`http://<电脑局域网IP>:5173` 即可（例如 `http://10.8.131.19:5173`）。
+Vite 代理会统一改写 `Origin`，后端 CORS 默认也放行 `localhost` 与
+`192.168.*` / `10.*` / `172.*` 私有网段；如需收紧或追加来源，通过 `CORS_ORIGINS` 显式配置。
+
 ### 4. 演示账号
 
 ```
@@ -187,7 +192,7 @@ cd tools/e2e && npm install && node screenshots.cjs
 | `AI_KEY_MASTER_FILE` | data/secret.key | AI 主密钥文件 |
 | `AI_KEY_MASTER` | 空 | Base64 32 字节，优先于文件 |
 | `UPLOAD_DIR` | data/uploads | AI 配图存储目录 |
-| `CORS_ORIGINS` | localhost:5173 等 | 允许的前端来源 |
+| `CORS_ORIGINS` | localhost / 私有网段 | 允许的前端来源模式，逗号分隔 |
 
 ## 常见问题
 
@@ -197,6 +202,13 @@ cd tools/e2e && npm install && node screenshots.cjs
 3. **Redis 没启动？** 不影响主要功能；`/api/health` 中 `redis=DOWN`，应用仍为 `UP`。
 4. **端口被占用？** 通过 `SERVER_PORT` 修改后端端口，同时修改 `frontend/vite.config.ts` 的代理目标。
 5. **忘记数据库密码？** 通过 `DB_PASSWORD` 环境变量传入，或修改 `application-dev.yml`。
+6. **手机/局域网打开后登录提示「没有权限执行该操作」或接口 403？**
+   这是旧版后端的 CORS 白名单只允许 `localhost` 导致的（Spring 返回 `403 Invalid CORS request`）。
+   当前版本已修复：Vite 代理会改写 `Origin`，后端默认放行 `192.168.*` / `10.*` / `172.*` 私有网段。
+   **升级后必须重启后端**（IDEA 里也要重新 Run，旧进程不会热加载配置）；如仍失败，
+   用 `CORS_ORIGINS=http://你的IP:5173` 启动后端，并确认手机与电脑同一局域网。
+7. **同一浏览器切换账号？** JWT 存在当前浏览器的 localStorage，不同浏览器/设备互不影响；
+   换账号请先在「我的 → 退出登录」，或换一个浏览器/无痕窗口。
 
 ## 设计与接口文档
 
