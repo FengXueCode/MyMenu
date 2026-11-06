@@ -40,6 +40,15 @@ class UrlGuardTest {
     }
 
     @Test
+    void extractsMultipleUrlsFromQueueText() {
+        String text = """
+                7.85 看看【A】红烧肉 https://v.douyin.com/a1/
+                8.20 看看【B】番茄炒蛋 https://v.douyin.com/b2/
+                """;
+        assertEquals(2, UrlGuard.extractUrls(text).size());
+    }
+
+    @Test
     void normalizesUrlWithoutScheme() {
         assertEquals("https://b23.tv/abc", guard.normalize("b23.tv/abc"));
     }

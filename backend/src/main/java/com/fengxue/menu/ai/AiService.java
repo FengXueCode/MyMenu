@@ -39,10 +39,39 @@ public class AiService {
                 PromptTemplates.EXTRACT_SYSTEM,
                 PromptTemplates.extractUserPrompt(request.title(), request.platform(), text), 90);
         JsonNode node = AiJsonParser.parse(content);
+        return parseDraft(node, true);
+    }
 
+    /**
+     * 收藏夹自动扫描：先判断视频是否菜谱，是则同时返回结构化菜谱。
+     */
+    public AiDtos.VideoRecipeDecision decideVideoRecipe(Long userId, String title, String description) {
+        String text = firstNonBlank(title, description);
+        if (text == null) {
+            return new AiDtos.VideoRecipeDecision(false, "缺少视频标题与简介", null);
+        }
+        if (text.length() > 6000) {
+            text = text.substring(0, 6000);
+        }
+        AiProvider provider = providerService.requireDefault(userId);
+        String content = aiClient.chat(provider, providerService.apiKeyOf(provider),
+                PromptTemplates.VIDEO_RECIPE_SYSTEM,
+                PromptTemplates.videoRecipePrompt(title, description, "video"), 90);
+        JsonNode node = AiJsonParser.parse(content);
+        boolean isRecipe = node.path("isRecipe").asBoolean(false);
+        String reason = clampText(node.path("reason").asString(""), 100, null);
+        AiDtos.RecipeDraft draft = null;
+        JsonNode recipeNode = node.path("recipe");
+        if (isRecipe && recipeNode.isObject()) {
+            draft = parseDraft(recipeNode, false);
+        }
+        return new AiDtos.VideoRecipeDecision(isRecipe, reason, draft);
+    }
+
+    private AiDtos.RecipeDraft parseDraft(JsonNode node, boolean requireComplete) {
         List<AiDtos.IngredientDraft> ingredients = parseIngredients(node.path("ingredients"));
         List<String> steps = parseSteps(node.path("steps"));
-        if (ingredients.isEmpty() || steps.isEmpty()) {
+        if (requireComplete && (ingredients.isEmpty() || steps.isEmpty())) {
             throw new BusinessException(ResultCode.AI_CALL_FAILED,
                     "AI 未能提取到完整菜谱，请补充一段视频文案后重试");
         }

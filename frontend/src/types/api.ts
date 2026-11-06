@@ -313,3 +313,83 @@ export interface HealthResult {
   time: string
   db: 'UP' | 'DOWN' | string
 }
+
+/* ------------------------------- 视频账号/收藏夹 ------------------------------- */
+
+export interface VideoAccount {
+  id: number
+  platform: 'bilibili' | string
+  nickname: string
+  avatar: string | null
+  status: 'ACTIVE' | 'EXPIRED' | string
+  lastLoginAt: string | null
+}
+
+export interface IntegrationSource {
+  id: number
+  platform: 'bilibili' | 'douyin' | string
+  sourceType: 'BILIBILI_FOLDER' | 'DOUYIN_QUEUE' | string
+  folderId: string | null
+  folderName: string | null
+  sourceUrl: string | null
+  autoScan: boolean
+  scanLimit: number
+  lastScanStatus: 'RUNNING' | 'SUCCESS' | 'FAILED' | 'IDLE' | string | null
+  lastScanAt: string | null
+  lastScanMessage: string | null
+  lastScanAdded: number
+}
+
+export interface IntegrationItem {
+  id: number
+  platform: 'bilibili' | 'douyin' | string
+  videoId: string
+  videoUrl: string | null
+  title: string | null
+  coverUrl: string | null
+  author: string | null
+  status: 'PENDING' | 'PROCESSING' | 'IMPORTED' | 'SKIPPED' | 'FAILED' | string
+  recipeId: number | null
+  recipeTitle: string | null
+  reason: string | null
+  createdAt: string
+  processedAt: string | null
+}
+
+export interface QueueStats {
+  pending: number
+  imported: number
+  skipped: number
+  failed: number
+}
+
+export interface IntegrationStatus {
+  bilibili?: VideoAccount | null
+  sources: IntegrationSource[]
+  queue: QueueStats
+  recentItems: IntegrationItem[]
+}
+
+export interface QrStartResult {
+  key: string
+  qrImage: string
+}
+
+export interface QrPollResult {
+  status: 'WAITING' | 'SCANNED' | 'CONFIRMED' | 'EXPIRED' | 'FAILED' | string
+  account?: VideoAccount | null
+  message: string
+}
+
+export interface ScanStartResult {
+  status: string
+  message: string
+}
+
+export interface QueueResult {
+  added: number
+  duplicates: number
+  invalid: number
+  total: number
+}
+

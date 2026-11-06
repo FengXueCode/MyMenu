@@ -54,6 +54,10 @@ public final class AiDtos {
     public record SummaryResponse(String aiSummary, List<String> ingredientsBrief, String pairing) {
     }
 
+    /** 收藏夹视频的菜谱识别结果。 */
+    public record VideoRecipeDecision(boolean isRecipe, String reason, RecipeDraft recipe) {
+    }
+
     public record ImageResponse(String coverUrl, boolean aiGenerated, String warning) {
     }
 }

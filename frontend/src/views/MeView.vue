@@ -45,8 +45,15 @@ const ENTRIES = [
     accent: 'bg-[#ece6f6] text-[#6b58a0]',
   },
   {
-    to: '/import',
+    to: '/settings/integrations',
     icon: 'link' as const,
+    title: '视频收藏',
+    hint: 'B站收藏夹自动生成菜谱',
+    accent: 'bg-[#f6e7df] text-tomato-deep',
+  },
+  {
+    to: '/import',
+    icon: 'pen' as const,
     title: '导入新菜谱',
     hint: '粘贴 B 站 / 抖音分享链接',
     accent: 'bg-paper-deep text-ink-soft',

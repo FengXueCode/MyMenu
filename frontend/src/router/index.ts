@@ -73,6 +73,12 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/views/AiSettingsView.vue'),
         meta: { title: 'AI 设置' },
       },
+      {
+        path: 'settings/integrations',
+        name: 'integrations',
+        component: () => import('@/views/VideoAccountsView.vue'),
+        meta: { title: '视频收藏' },
+      },
     ],
   },
   {

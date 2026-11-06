@@ -123,6 +123,26 @@ Dish = { recipeId, title, coverUrl, meatType, spiceLevel, cookMinutes,
 `POST /api/menu/today/save` `{date, plan: MenuPlan}` → `null`
 同日同 seq 结果稳定；`regenerate=true` 改变 seq 与组合。
 
+## 视频账号 / 收藏夹自动生成
+
+所有接口需登录；B 站 Cookie 只加密存在后端，任何响应都不返回。
+
+| 方法 | 路径 | 说明 |
+| --- | --- | --- |
+| GET | `/api/integrations/status` | 账号、收藏源、队列统计、最近处理记录 |
+| POST | `/api/integrations/bilibili/qr` | 生成扫码登录二维码，返回 `{key, qrImage}` |
+| GET | `/api/integrations/bilibili/qr/{key}` | 轮询登录状态，返回 `WAITING/SCANNED/CONFIRMED/EXPIRED/FAILED` |
+| DELETE | `/api/integrations/bilibili` | 断开 B 站并删除收藏源 |
+| POST | `/api/integrations/bilibili/folder` | `{url}` 添加 B 站收藏夹 |
+| PUT | `/api/integrations/sources/{id}` | `{autoScan?, scanLimit?}` |
+| DELETE | `/api/integrations/sources/{id}` | 删除收藏源 |
+| POST | `/api/integrations/sources/{id}/scan` | 异步扫描单个来源，返回 `{status,message}` |
+| POST | `/api/integrations/scan` | 异步扫描全部启用的来源 |
+| POST | `/api/integrations/douyin/queue` | `{text}` 从分享文案中提取链接加入队列 |
+| GET | `/api/integrations/items` | 分页处理记录：`status/pageNum/pageSize` |
+
+扫描状态通过 `source.lastScanStatus`（`RUNNING/SUCCESS/FAILED`）与 `lastScanMessage` 轮询。
+
 ## 健康检查
 
 `GET /api/health` → `{ status: 'UP', time, db: 'UP'|'DOWN' }`

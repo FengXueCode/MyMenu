@@ -16,6 +16,8 @@
 - **AI 配置**：前端可添加多套 OpenAI 兼容配置（OpenAI / DeepSeek / 通义千问 / Kimi / 硅基流动 / OpenCode Zen / Ollama / 自定义），
   支持测试连接、设为默认；**API Key 仅在后端本地加密保存**
 - **AI 能力**：菜谱摘要（卖点 + 配菜 + 搭配建议）、AI 生成菜品配图（未配置图像模型时用本地风格化封面兜底）
+- **视频收藏自动生成**：B 站扫码登录后每日自动扫描指定收藏夹，AI 识别菜谱视频并生成菜谱；
+  抖音因收藏夹接口风控，先提供「分享链接队列」每天自动处理
 - **用餐偏好**：用餐人数、每日餐数、每餐菜品数、荤素配比、忌口食材、辣度、最长烹饪时间、偏好分类
 - **今日菜单**：按偏好随机组合、同日稳定、单道换菜、重新生成、保存；配料按人数自动缩放
 - **移动端**：底部 Tab、底部弹层筛选、吸底操作、安全区适配、375px 无横向滚动
@@ -28,8 +30,9 @@
 | ![菜谱详情](docs/screenshots/desktop/desktop-detail.png) | ![菜谱详情](docs/screenshots/mobile/mobile-detail.png) |
 | ![今日菜单](docs/screenshots/desktop/desktop-today.png) | ![今日菜单](docs/screenshots/mobile/mobile-today.png) |
 | ![AI 设置](docs/screenshots/desktop/desktop-ai-settings.png) | ![导入](docs/screenshots/mobile/mobile-import.png) |
+| ![视频收藏](docs/screenshots/desktop/desktop-integrations.png) | ![视频收藏](docs/screenshots/mobile/mobile-integrations.png) |
 
-全部 23 张验收截图（1280×900 桌面 / 390×844 移动）见 `docs/screenshots/`，
+全部 26 张验收截图（1280×900 桌面 / 390×844 移动）见 `docs/screenshots/`，
 `report.json` 记录了每个页面的横向溢出与控制台错误检查结果（均为 0）。
 
 ## 目录结构
@@ -120,7 +123,39 @@ Vite 代理会统一改写 `Origin`，后端 CORS 默认也放行 `localhost` �
 密码：123456
 ```
 
-## 配置 AI 大模型
+## 视频收藏 → 自动生成菜谱
+
+入口：**我的 → 视频收藏**。
+
+### B 站（全自动）
+
+1. 点「连接 B 站」，用 B 站手机 App 扫码并确认；
+   - 后端通过官方 Web 二维码登录获取 Cookie，使用 **AES-256-GCM 加密**保存；
+   - 不保存账号密码，接口不返回 Cookie，过期后重新扫码。
+2. 把收藏夹链接（形如 `https://space.bilibili.com/xxx/favlist?fid=123456`）粘贴进来；
+3. 每天 **06:00** 自动扫描（可用 `INTEGRATION_SCAN_CRON` 修改），也可以在页面点「立即扫描」；
+4. 对新增视频：标题 + 简介 → AI 判断是否菜谱 → 是则提取配料/步骤并生成菜谱；
+   - 非菜谱标记「不是菜谱」，不重复调用 AI；
+   - 每轮最多处理 20 条新视频，结果可在「处理记录」查看；
+   - 生成的菜谱自动进入菜谱库，参与「今日菜单」随机。
+
+> 自动生成菜谱需要当前账号先在 **AI 配置** 里配置一个可用模型；未配置时视频只会进入「待处理」队列，
+> 不会自动创建菜谱。扫描只依据视频标题与简介（不下载视频、不做语音转写）；标题很模糊时 AI 可能判断不准，
+> 但不会重复处理。B 站页面改版可能导致收藏夹接口变化，届时需要更新解析逻辑。
+
+### 抖音（分享链接队列）
+
+抖音收藏夹接口有签名风控（直接请求返回 403），暂不做自动抓取。刷到菜谱视频时把**分享链接/文案**
+粘贴到「抖音分享链接队列」，系统每天 06:00 自动解析并调用 AI 生成菜谱；也可以手动触发扫描。
+后续如果要做真正的抖音收藏夹自动同步，只能增加浏览器扩展/本机浏览器自动化，稳定性另评估。
+
+### 定时与环境变量
+
+| 变量 | 默认值 | 说明 |
+| --- | --- | --- |
+| `INTEGRATION_SCAN_CRON` | `0 0 6 * * *` | 每日扫描 Cron（Asia/Shanghai） |
+
+
 
 登录后进入 **我的 → AI 配置**：
 
@@ -202,7 +237,7 @@ python scripts/mock-ai-server.py     # http://127.0.0.1:9999/v1
 
 ```bash
 # 后端
-cd backend && mvn test          # 33 个单元测试（JWT / Key 加解密 / SSRF / 菜单算法 / 份量缩放）
+cd backend && mvn test          # 38 个单元测试（JWT / Key 加解密 / SSRF / 菜单算法 / 收藏夹解析）
 mvn -DskipTests package
 
 # 前端
@@ -231,6 +266,7 @@ cd tools/e2e && npm install && node screenshots.cjs
 | `AI_KEY_MASTER_FILE` | data/secret.key | AI 主密钥文件 |
 | `AI_KEY_MASTER` | 空 | Base64 32 字节，优先于文件 |
 | `UPLOAD_DIR` | data/uploads | AI 配图存储目录 |
+| `INTEGRATION_SCAN_CRON` | `0 0 6 * * *` | 每日视频收藏扫描时间（Asia/Shanghai） |
 | `CORS_ORIGINS` | localhost / 私有网段 | 允许的前端来源模式，逗号分隔 |
 
 ## 常见问题

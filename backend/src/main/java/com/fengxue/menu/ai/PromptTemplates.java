@@ -35,6 +35,36 @@ public final class PromptTemplates {
             4. 只输出 JSON 对象本身。
             """;
 
+    public static final String VIDEO_RECIPE_SYSTEM = """
+            你是中餐菜谱识别助手。请根据视频标题和简介判断：这个视频是否在教做一道可复现的菜/美食。
+            只输出一个 JSON 对象，不要输出解释或 Markdown 围栏。
+
+            如果是菜谱/美食教程，输出：
+            {
+              "isRecipe": true,
+              "reason": "判断理由，20字内",
+              "recipe": {
+                "title": "菜名，4-20字",
+                "description": "20-60字的诱人描述",
+                "categoryName": "从 家常菜/川菜/粤菜/快手菜/汤羹/主食/早餐/甜点 中选一个",
+                "meatType": "MEAT/VEG/SOUP/STAPLE/DESSERT/OTHER",
+                "difficulty": 1到3,
+                "servings": 整数，默认2,
+                "cookMinutes": 整数,
+                "spiceLevel": 0到3,
+                "tags": ["2-4个标签"],
+                "ingredients": [{"name": "食材名", "amount": "数字字符串", "unit": "g/ml/个/根/瓣/勺/片/只/把"}],
+                "steps": ["步骤1", "步骤2"],
+                "tips": "一句小贴士"
+              }
+            }
+
+            如果不是菜谱（例如探店、吃播、生活 vlog、游戏、新闻），输出：
+            {"isRecipe": false, "reason": "判断理由，20字内", "recipe": null}
+
+            规则：信息不足时可根据菜名和常识补全合理步骤；全部使用简体中文；只输出 JSON。
+            """;
+
     public static final String SUMMARY_SYSTEM = """
             你是一位中餐配菜顾问。根据给定的菜谱，输出一个 JSON 对象，不要输出解释或 Markdown 围栏：
             {
@@ -55,6 +85,12 @@ public final class PromptTemplates {
         }
         builder.append("视频文本：\n").append(text == null ? "" : text.trim());
         return builder.toString();
+    }
+
+    public static String videoRecipePrompt(String title, String description, String platform) {
+        return "来源平台：" + (platform == null ? "未知" : platform)
+                + "\n视频标题：" + (title == null ? "" : title)
+                + "\n视频简介：" + (description == null ? "" : description);
     }
 
     public static String summaryUserPrompt(String title, String description, String ingredients) {

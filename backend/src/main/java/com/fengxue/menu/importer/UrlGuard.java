@@ -79,21 +79,24 @@ public class UrlGuard {
      * 从任意分享文本中提取第一个链接。
      */
     public static String extractUrl(String text) {
+        List<String> urls = extractUrls(text);
+        return urls.isEmpty() ? null : urls.get(0);
+    }
+
+    /**
+     * 提取文本中的全部链接（已去掉尾部中文标点）。
+     */
+    public static List<String> extractUrls(String text) {
         if (text == null) {
-            return null;
+            return List.of();
         }
-        int start = text.indexOf("http://");
-        if (start < 0) {
-            start = text.indexOf("https://");
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
+                "https?://[^\\s，。；、,;）)】\\]]+");
+        java.util.regex.Matcher matcher = pattern.matcher(text);
+        List<String> urls = new java.util.ArrayList<>();
+        while (matcher.find()) {
+            urls.add(matcher.group());
         }
-        if (start < 0) {
-            return null;
-        }
-        int end = start;
-        while (end < text.length() && !Character.isWhitespace(text.charAt(end))) {
-            end++;
-        }
-        String url = text.substring(start, end);
-        return url.replaceAll("[，。；、,;）)】\\]]+$", "");
+        return urls;
     }
 }

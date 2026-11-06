@@ -76,6 +76,9 @@ app:
     expire-days: ${JWT_EXPIRE_DAYS:7}
   ai:
     master-key-file: ${AI_KEY_MASTER_FILE:data/secret.key}
+  integration:
+    # 每天 06:00（Asia/Shanghai）扫描 B 站收藏夹 / 抖音待处理链接
+    scan-cron: ${INTEGRATION_SCAN_CRON:0 0 6 * * *}
   storage:
     upload-dir: ${UPLOAD_DIR:data/uploads}
     max-image-bytes: ${MAX_IMAGE_BYTES:5242880}
