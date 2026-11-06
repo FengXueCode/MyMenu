@@ -29,7 +29,7 @@
 | ![今日菜单](docs/screenshots/desktop/desktop-today.png) | ![今日菜单](docs/screenshots/mobile/mobile-today.png) |
 | ![AI 设置](docs/screenshots/desktop/desktop-ai-settings.png) | ![导入](docs/screenshots/mobile/mobile-import.png) |
 
-全部 21 张验收截图（1280×900 桌面 / 390×844 移动）见 `docs/screenshots/`，
+全部 23 张验收截图（1280×900 桌面 / 390×844 移动）见 `docs/screenshots/`，
 `report.json` 记录了每个页面的横向溢出与控制台错误检查结果（均为 0）。
 
 ## 目录结构
