@@ -2,6 +2,7 @@
 import { RouterView } from 'vue-router'
 
 import BottomTabs from '@/components/BottomTabs.vue'
+import CookTimerBar from '@/components/CookTimerBar.vue'
 import TopNav from '@/components/TopNav.vue'
 </script>
 
@@ -9,6 +10,9 @@ import TopNav from '@/components/TopNav.vue'
   <div class="flex min-h-screen w-full flex-col overflow-x-clip">
     <!-- 桌面端顶部导航（移动端隐藏） -->
     <TopNav class="hidden md:block" />
+
+    <!-- 计时中离开详情页时，全站顶部保留一条可点击的计时条 -->
+    <CookTimerBar />
 
     <!-- 内容区：单列手机 → 桌面宽版，统一 1180px 最大宽度 -->
     <main

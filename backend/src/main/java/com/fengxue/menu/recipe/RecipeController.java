@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RecipeController {
 
     private final RecipeService recipeService;
+    private final CookTimerService cookTimerService;
 
     @GetMapping
     public Result<PageResult<RecipeDtos.RecipeCardVO>> list(
@@ -55,5 +56,18 @@ public class RecipeController {
     public Result<Void> delete(@PathVariable Long id) {
         recipeService.delete(CurrentUser.require(), id);
         return Result.success();
+    }
+
+    /**
+     * 记录一次真实烹饪用时，并更新自己的菜谱预估时长。
+     */
+    @PostMapping("/{id}/cook-sessions")
+    public Result<RecipeDtos.CookSessionResponse> recordCookSession(
+            @PathVariable Long id,
+            @Valid @RequestBody RecipeDtos.CookSessionRequest request) {
+        CookTimerService.CookResult result = cookTimerService.record(
+                CurrentUser.require(), id, request.durationSeconds());
+        return Result.success(new RecipeDtos.CookSessionResponse(
+                result.actualMinutes(), result.estimateMinutes(), result.updatedEstimate()));
     }
 }

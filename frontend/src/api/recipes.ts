@@ -1,5 +1,12 @@
 import { http } from '@/api/http'
-import type { PageResult, RecipeCard, RecipeDetail, RecipeQuery, RecipeUpsertInput } from '@/types/api'
+import type {
+  CookSessionResult,
+  PageResult,
+  RecipeCard,
+  RecipeDetail,
+  RecipeQuery,
+  RecipeUpsertInput,
+} from '@/types/api'
 
 export const recipesApi = {
   list(query: RecipeQuery = {}) {
@@ -25,5 +32,11 @@ export const recipesApi = {
   },
   remove(id: number) {
     return http<null>(`/api/recipes/${id}`, { method: 'DELETE' })
+  },
+  recordCookSession(id: number, durationSeconds: number) {
+    return http<CookSessionResult>(`/api/recipes/${id}/cook-sessions`, {
+      method: 'POST',
+      body: { durationSeconds },
+    })
   },
 }

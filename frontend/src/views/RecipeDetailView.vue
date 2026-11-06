@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { RouterLink, useRoute, useRouter } from 'vue-router'
+import { onBeforeRouteLeave, RouterLink, useRoute, useRouter } from 'vue-router'
 
 import { aiApi } from '@/api/ai'
 import { categoriesApi } from '@/api/categories'
@@ -12,6 +12,7 @@ import EmptyState from '@/components/EmptyState.vue'
 import ModalSheet from '@/components/ModalSheet.vue'
 import RecipeForm from '@/components/RecipeForm.vue'
 import SkeletonCard from '@/components/SkeletonCard.vue'
+import { useCookTimerStore } from '@/stores/cookTimer'
 import { useToastStore } from '@/stores/toast'
 import type { Category, RecipeDetail, RecipeUpsertInput } from '@/types/api'
 import {
@@ -128,6 +129,7 @@ async function load(): Promise<void> {
   imageWarning.value = ''
   try {
     recipe.value = await recipesApi.detail(id)
+    cookTimer.adoptLegacy(id, recipe.value.title)
     const saved = readSavedServings()
     servings.value = saved ?? recipe.value.servings ?? 2
   } catch (error) {
@@ -232,9 +234,89 @@ async function confirmDelete(): Promise<void> {
   }
 }
 
+/* ------------------------------- 开火计时 ------------------------------- */
+
+const cookTimer = useCookTimerStore()
+const timerRecording = ref(false)
+const timerMessage = ref('')
+const switchTimerOpen = ref(false)
+
+/** 全局只保留一个计时器；本页只展示属于当前菜谱的计时状态 */
+const timerActiveHere = computed(() => cookTimer.recipeId === recipeId.value && cookTimer.isActive)
+const timerRunning = computed(() => timerActiveHere.value && cookTimer.running)
+const timerElapsedMs = computed(() => (timerActiveHere.value ? cookTimer.elapsedMs : 0))
+const timerClock = computed(() => (timerActiveHere.value ? cookTimer.clock : '00:00:00'))
+const timerStatusText = computed(() => {
+  if (!timerActiveHere.value) return '未开始'
+  return cookTimer.running ? '计时中' : '已暂停'
+})
+const timerCanRecord = computed(() => timerElapsedMs.value >= 1000 && !timerRecording.value)
+const otherTimerActive = computed(() => cookTimer.isActive && cookTimer.recipeId !== recipeId.value)
+const otherTimerTitle = computed(() => cookTimer.recipeTitle || '另一道菜')
+
+function startTimer(): void {
+  if (!recipe.value) return
+  if (otherTimerActive.value) {
+    switchTimerOpen.value = true
+    return
+  }
+  cookTimer.start(recipe.value.id, recipe.value.title)
+  timerMessage.value = ''
+}
+
+function confirmSwitchTimer(): void {
+  if (!recipe.value) return
+  cookTimer.reset()
+  cookTimer.start(recipe.value.id, recipe.value.title)
+  switchTimerOpen.value = false
+  timerMessage.value = ''
+}
+
+function pauseTimer(): void {
+  cookTimer.pause()
+}
+
+function resetTimer(): void {
+  cookTimer.reset()
+  timerMessage.value = ''
+}
+
+async function finishTimer(): Promise<void> {
+  if (!recipe.value || !timerCanRecord.value) return
+  cookTimer.sync()
+  const seconds = Math.max(1, Math.round(timerElapsedMs.value / 1000))
+  const actualText = formatSeconds(seconds)
+  timerRecording.value = true
+  try {
+    const result = await recipesApi.recordCookSession(recipe.value.id, seconds)
+    if (result.updatedEstimate) {
+      recipe.value.durationMin = result.estimateMinutes
+      timerMessage.value = `本次实际用时 ${actualText}，预估时间已更新为 ${result.estimateMinutes} 分钟（暂停时间不计入）`
+      toast.success('计时已记录，预估时间已更新')
+    } else {
+      timerMessage.value = `本次实际用时 ${actualText}；示例菜谱的公共预估时间保持不变（暂停时间不计入）`
+      toast.info('计时已记录')
+    }
+    cookTimer.reset()
+  } catch {
+    // 记录失败时暂停计时，保留本次用时方便重试
+    cookTimer.pause()
+  } finally {
+    timerRecording.value = false
+  }
+}
+
+onBeforeRouteLeave(() => {
+  if (timerRunning.value) {
+    toast.info('计时还在继续，顶部悬浮条可以随时回来')
+  }
+})
+
 watch(
   recipeId,
   () => {
+    timerMessage.value = ''
+    switchTimerOpen.value = false
     void load()
   },
   { immediate: true },
@@ -416,6 +498,106 @@ void loadCategories()
           </div>
         </div>
       </div>
+
+      <!-- 开火计时 -->
+      <section class="rounded-card border border-line bg-card p-4 shadow-paper md:p-5">
+        <div class="flex items-start gap-3">
+          <span
+            class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-tomato-soft text-tomato-deep"
+          >
+            <AppIcon name="clock" :size="17" />
+          </span>
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <h2 class="font-display text-[16px] text-ink">开火计时</h2>
+              <span class="rounded-full bg-paper-deep px-2 py-0.5 text-[10.5px] text-ink-muted">
+                预估 {{ formatDuration(recipe.durationMin) }}
+              </span>
+              <span
+                class="ml-auto text-[10.5px]"
+                :class="
+                  timerRunning
+                    ? 'text-tomato-deep'
+                    : timerElapsedMs > 0
+                      ? 'text-ink-soft'
+                      : 'text-ink-muted'
+                "
+              >
+                {{ timerStatusText }}
+              </span>
+            </div>
+
+            <div class="mt-2 flex items-end gap-2">
+              <p
+                class="font-mono text-[34px] leading-none tracking-[0.04em] tabular-nums"
+                :class="timerRunning ? 'text-tomato' : 'text-ink'"
+              >
+                {{ timerClock }}
+              </p>
+              <span class="pb-1 text-[10.5px] text-ink-muted">本次实际用时</span>
+            </div>
+
+            <p class="mt-1.5 text-[11px] leading-relaxed text-ink-muted">
+              {{
+                timerMessage ||
+                (otherTimerActive
+                  ? `「${otherTimerTitle}」还在计时（${cookTimer.clock}），开始本菜前会先确认是否放弃它。`
+                  : isMine
+                    ? '做菜开始时点开始，暂停的时间不计入实际用时；结束后点「结束并记录」，会把预估时间更新为本次实际用时。'
+                    : '示例菜谱也可以计时，暂停的时间不计入；结束后只记录本次用时，不修改公共预估时间。')
+              }}
+            </p>
+
+            <div class="mt-2.5 flex flex-wrap items-center gap-2">
+              <button
+                v-if="!timerRunning && timerElapsedMs === 0"
+                type="button"
+                class="inline-flex h-11 items-center gap-1.5 rounded-full bg-tomato px-4 text-[12.5px] font-medium text-paper transition hover:bg-tomato-deep"
+                @click="startTimer"
+              >
+                <AppIcon name="play" :size="14" />
+                开始计时
+              </button>
+              <button
+                v-else-if="timerRunning"
+                type="button"
+                class="inline-flex h-11 items-center gap-1.5 rounded-full border border-line bg-paper px-4 text-[12.5px] text-ink-soft transition hover:border-line-strong"
+                @click="pauseTimer"
+              >
+                <AppIcon name="pause" :size="14" />
+                暂停
+              </button>
+              <button
+                v-else
+                type="button"
+                class="inline-flex h-11 items-center gap-1.5 rounded-full bg-tomato px-4 text-[12.5px] font-medium text-paper transition hover:bg-tomato-deep"
+                @click="startTimer"
+              >
+                <AppIcon name="play" :size="14" />
+                继续
+              </button>
+              <button
+                v-if="timerElapsedMs > 0"
+                type="button"
+                class="inline-flex h-11 items-center gap-1.5 rounded-full border border-herb/40 bg-herb-soft px-3.5 text-[12.5px] text-herb transition hover:bg-herb/15 disabled:opacity-50"
+                :disabled="!timerCanRecord"
+                @click="finishTimer"
+              >
+                <AppIcon name="check" :size="14" />
+                {{ timerRecording ? '记录中…' : '结束并记录' }}
+              </button>
+              <button
+                v-if="timerElapsedMs > 0 && !timerRecording"
+                type="button"
+                class="h-11 rounded-full px-3 text-[12px] text-ink-muted transition hover:text-tomato-deep"
+                @click="resetTimer"
+              >
+                放弃
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <!-- 兜底封面提示 -->
       <p
@@ -743,6 +925,16 @@ void loadCategories()
       tone="danger"
       :loading="deleting"
       @confirm="confirmDelete"
+    />
+
+    <ConfirmDialog
+      v-model="switchTimerOpen"
+      title="另一道菜还在计时"
+      :message="`「${otherTimerTitle}」已经计时 ${cookTimer.clock}，开始本菜的计时会放弃它。`"
+      confirm-text="放弃并开始"
+      cancel-text="继续原来的"
+      tone="danger"
+      @confirm="confirmSwitchTimer"
     />
   </div>
 </template>

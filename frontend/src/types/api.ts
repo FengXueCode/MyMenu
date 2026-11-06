@@ -121,6 +121,12 @@ export interface RecipeDetail extends RecipeCard {
   steps: Step[]
 }
 
+export interface CookSessionResult {
+  actualMinutes: number
+  estimateMinutes: number
+  updatedEstimate: boolean
+}
+
 /** POST/PUT /api/recipes 请求体 */
 export interface RecipeUpsertInput {
   title: string

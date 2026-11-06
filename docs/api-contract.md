@@ -52,6 +52,8 @@ type Difficulty = 1 | 2 | 3
   "steps":[{"content":"切块","durationSec":120}] }
 ```
 `PUT /api/recipes/{id}` 同上；`DELETE /api/recipes/{id}` → `null`（仅本人，系统菜谱 403）。
+`POST /api/recipes/{id}/cook-sessions` `{durationSeconds}` → `{actualMinutes, estimateMinutes, updatedEstimate}`
+（记录真实烹饪用时；本人菜谱会把 `durationMin` 更新为实际分钟，系统菜谱只记录不改公共预估）
 
 ## 视频导入
 

@@ -58,4 +58,14 @@ public final class RecipeDtos {
             String owner, LocalDateTime createdAt,
             List<IngredientDto> ingredients, List<StepDto> steps) {
     }
+
+    public record CookSessionRequest(
+            @jakarta.validation.constraints.Min(value = 1, message = "计时时长不合法")
+            @jakarta.validation.constraints.Max(value = 43200, message = "计时时长不合法")
+            int durationSeconds) {
+    }
+
+    public record CookSessionResponse(int actualMinutes, int estimateMinutes,
+                                      boolean updatedEstimate) {
+    }
 }

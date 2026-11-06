@@ -16,6 +16,7 @@
 - **AI 配置**：前端可添加多套 OpenAI 兼容配置（OpenAI / DeepSeek / 通义千问 / Kimi / 硅基流动 / OpenCode Zen / Ollama / 自定义），
   支持测试连接、设为默认；**API Key 仅在后端本地加密保存**
 - **AI 能力**：菜谱摘要（卖点 + 配菜 + 搭配建议）、AI 生成菜品配图（未配置图像模型时用本地风格化封面兜底）
+- **开火计时**：详情页记录本次真实烹饪用时，结束后把自己的菜谱预估时间更新为实际分钟数
 - **视频收藏自动生成**：B 站扫码登录后每日自动扫描指定收藏夹，AI 识别菜谱视频并生成菜谱；
   抖音因收藏夹接口风控，先提供「分享链接队列」每天自动处理
 - **用餐偏好**：用餐人数、每日餐数、每餐菜品数、荤素配比、忌口食材、辣度、最长烹饪时间、偏好分类
@@ -31,8 +32,9 @@
 | ![今日菜单](docs/screenshots/desktop/desktop-today.png) | ![今日菜单](docs/screenshots/mobile/mobile-today.png) |
 | ![AI 设置](docs/screenshots/desktop/desktop-ai-settings.png) | ![导入](docs/screenshots/mobile/mobile-import.png) |
 | ![视频收藏](docs/screenshots/desktop/desktop-integrations.png) | ![视频收藏](docs/screenshots/mobile/mobile-integrations.png) |
+| ![开火计时](docs/screenshots/desktop/desktop-cook-timer.png) | ![开火计时](docs/screenshots/mobile/mobile-cook-timer.png) |
 
-全部 28 张验收截图（1280×900 桌面 / 390×844 移动）见 `docs/screenshots/`，
+全部 30 张验收截图（1280×900 桌面 / 390×844 移动）见 `docs/screenshots/`，
 `report.json` 记录了每个页面的横向溢出与控制台错误检查结果（均为 0）。
 
 ## 目录结构
@@ -232,6 +234,18 @@ python scripts/mock-ai-server.py     # http://127.0.0.1:9999/v1
 - **抖音**：页面有反爬限制，解析失败时仍会从分享文案中提取标题/作者，返回 `warnings`；
   此时可把视频文案/字幕粘贴到「补充文案」中，再让 AI 提取。**不下载视频、不做语音转写。**
 - 安全：仅允许 B 站/抖音域名；每次重定向都校验；禁止内网/回环地址；限制超时与响应大小（防 SSRF）。
+
+## 开火计时
+
+菜谱详情页有一块「开火计时」：
+
+- 开始 / 暂停 / 继续 / 放弃；暂停期间不计入实际用时；
+- 同一时间只保留一个计时器：开另一道菜前会确认是否放弃原计时；
+- 计时中离开详情页，顶部会出现全站悬浮条（显示菜名、状态与用时，点击可回到菜谱）；
+- 页面刷新或切走再回来会继续计时（状态按全局计时器存 localStorage）；
+- 点「结束并记录」后，本次真实用时写入 `recipe_cook_log`；
+- 自己创建的菜谱会把 `duration_min` 更新为本次实际分钟数（四舍五入，至少 1 分钟），页面上的「预估」立即更新；
+- 系统示例菜谱也会记录用时，但不会修改共享的公共预估时间。
 
 ## 测试与构建
 

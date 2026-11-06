@@ -32,6 +32,7 @@ type IconName =
   | 'logout'
   | 'filter'
   | 'play'
+  | 'pause'
   | 'alert'
   | 'info'
   | 'external'
@@ -82,6 +83,7 @@ const PATHS: Record<IconName, string[]> = {
   logout: ['M15 4h4v16h-4', 'M10.5 8 6.5 12l4 4M6.5 12H16'],
   filter: ['M4 6h16M7 12h10M10 18h4'],
   play: ['M8.5 5.5 19 12 8.5 18.5v-13Z'],
+  pause: ['M9.5 5v14M14.5 5v14'],
   alert: ['M12 4 21 20H3L12 4Z', 'M12 10.5v4M12 17.2v.3'],
   info: ['M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z', 'M12 11v6M12 8v.4'],
   external: ['M14 4h6v6M20 4l-7.5 7.5', 'M18 14v5.5H4.5V6H10'],
