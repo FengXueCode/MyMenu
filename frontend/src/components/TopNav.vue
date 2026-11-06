@@ -19,12 +19,13 @@ const NAV_ITEMS: NavItem[] = [
   { name: 'home', label: '首页', match: ['home'] },
   { name: 'recipes', label: '菜谱库', match: ['recipes', 'recipe-detail'] },
   { name: 'today', label: '今日菜单', match: ['today'] },
-  { name: 'import', label: '导入', match: ['import'] },
-  { name: 'me', label: '我的', match: ['me', 'preferences', 'ai-settings'] },
 ]
 
 const currentName = computed(() => String(route.name ?? ''))
 const isActive = (item: NavItem): boolean => item.match.includes(currentName.value)
+// 「记一笔」和头像分别是导入、我的的唯一入口，避免与导航里的同名菜单重复
+const importActive = computed(() => currentName.value === 'import')
+const meActive = computed(() => ['me', 'preferences', 'ai-settings'].includes(currentName.value))
 </script>
 
 <template>
@@ -70,7 +71,13 @@ const isActive = (item: NavItem): boolean => item.match.includes(currentName.val
       <div class="ml-auto flex items-center gap-2 md:gap-3">
         <RouterLink
           to="/import"
-          class="hidden h-11 items-center gap-1.5 rounded-full border border-tomato/30 bg-card px-4 text-[13px] font-medium text-tomato-deep shadow-paper transition hover:-translate-y-px hover:bg-tomato-soft md:flex"
+          class="hidden h-11 items-center gap-1.5 rounded-full border px-4 text-[13px] font-medium shadow-paper transition hover:-translate-y-px md:flex"
+          :class="
+            importActive
+              ? 'border-tomato/60 bg-tomato-soft text-tomato-deep'
+              : 'border-tomato/30 bg-card text-tomato-deep hover:bg-tomato-soft'
+          "
+          :aria-current="importActive ? 'page' : undefined"
         >
           <AppIcon name="pen" :size="16" />
           记一笔
@@ -78,8 +85,10 @@ const isActive = (item: NavItem): boolean => item.match.includes(currentName.val
 
         <RouterLink
           to="/me"
-          class="flex min-h-11 items-center gap-2 rounded-full border border-line bg-card py-1 pl-1 pr-1 transition hover:border-line-strong md:pr-3"
+          class="flex min-h-11 items-center gap-2 rounded-full border bg-card py-1 pl-1 pr-1 transition hover:border-line-strong md:pr-3"
+          :class="meActive ? 'border-tomato/50 ring-2 ring-tomato/10' : 'border-line'"
           :aria-label="`我的：${auth.displayName}`"
+          :aria-current="meActive ? 'page' : undefined"
         >
           <span
             class="grid h-8 w-8 place-items-center rounded-full bg-herb/12 font-display text-sm text-herb"
