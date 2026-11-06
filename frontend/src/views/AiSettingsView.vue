@@ -57,7 +57,7 @@ const PROVIDER_PRESETS: Record<
     baseUrl: 'https://opencode.ai/inference/openai/v1',
     chatModel: 'deepseek-v4.1-flash',
     imageModel: '',
-    hint: 'OpenAI 兼容。注意：OpenCode 免费模型只允许 OpenCode 客户端调用，外部应用会 403；这里请用付费模型/Go 订阅。免费测试建议用本地 Ollama。',
+    hint: 'OpenAI 兼容。Console 里的 Free 只代表 OpenCode 客户端可用，外部 API 可能 403/429；若你的 Key 实测可用，可直接把对话模型改成 big-pickle 等免费模型。',
   },
   ollama: {
     label: 'Ollama（本地）',

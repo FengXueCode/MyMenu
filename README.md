@@ -139,10 +139,29 @@ OpenCode Console 提供 OpenAI 兼容接口，已内置预设：
 - 协议：`POST /chat/completions`
 - Key：OpenCode Console 的 Personal API Key
 
-但请注意：**OpenCode 的免费模型只允许 OpenCode 客户端调用，外部应用即使带 Key 也会被拒绝**。
-官方文档明确写着 “Free-tier chat models are only available from within OpenCode; other clients receive HTTP 403,
-even with an API key.”（见 [OpenCode Inference API 文档](https://opencode.ai/v2/docs/console/api/inference/)）。
-所以不要把 `*-free` 模型填进本网站；付费模型或 OpenCode Go 订阅可以正常使用这个预设。
+注意区分两件事：
+
+- Console 的 Models 页面能勾选/看到 `Free` 模型，只代表这些模型**对 OpenCode 客户端开放**；
+- 官方 Inference API 文档明确说明：“Free-tier chat models are only available from within OpenCode;
+  other clients receive HTTP 403, even with an API key.”
+  （见 [OpenCode Inference API 文档](https://opencode.ai/v2/docs/console/api/inference/)，
+  以及官方置顶 issue [#59387](https://github.com/anomalyco/opencode/issues/59387)）
+
+可以用下面的命令验证**你的 Key**到底能不能调免费模型（不要泄露 Key）：
+
+```bash
+curl -sS -w '\nHTTP %{http_code}\n' https://opencode.ai/inference/openai/v1/chat/completions \
+  -H "Authorization: Bearer $OPENCODE_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"model":"big-pickle","messages":[{"role":"user","content":"只回复 OK"}],"max_tokens":8}'
+```
+
+- 返回 `HTTP 200`：说明你的账号/Key 可以走 API，在本网站把对话模型改成 `big-pickle`
+  或 `deepseek-v4.1-flash-free` 即可；
+- 返回 `403` / `429 FreeUsageLimitError`：说明免费模型被限制在 OpenCode 客户端内，
+  请改用付费模型 / Go 订阅，或使用下面的免费替代方案。
+
+本网站的 OpenCode 预设默认填的是付费模型 `deepseek-v4.1-flash`，模型名可以自由修改。
 
 ### 想免费先测试 AI 功能？
 
