@@ -1,7 +1,0 @@
-Mock AI server: http://127.0.0.1:9999/v1
-[mock-ai] code 501, message Unsupported method ('GET')
-[mock-ai] "GET /v1/models HTTP/1.1" 501 -
-[mock-ai] "POST /v1/chat/completions HTTP/1.1" 200 -
-[mock-ai] "POST /v1/chat/completions HTTP/1.1" 200 -
-[mock-ai] "POST /v1/chat/completions HTTP/1.1" 200 -
-[mock-ai] "POST /v1/images/generations HTTP/1.1" 200 -
