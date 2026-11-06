@@ -11,7 +11,7 @@
 ## 功能
 
 - **账号**：注册 / 登录 / JWT 鉴权，演示账号一键体验
-- **菜谱库**：搜索、分类、荤素筛选、分页；内置 20 道示例菜谱 + 8 个系统分类
+- **菜谱库**：搜索、分类、荤素筛选、分页；内置 20 道示例菜谱 + 8 个系统分类；自己的菜谱支持编辑/删除
 - **视频导入**：粘贴 B 站 / 抖音链接或整段分享文案 → 解析标题/封面/简介 → AI 结构化 → 可编辑预览 → 保存
 - **AI 配置**：前端可添加多套 OpenAI 兼容配置（OpenAI / DeepSeek / 通义千问 / Kimi / 硅基流动 / OpenCode Zen / Ollama / 自定义），
   支持测试连接、设为默认；**API Key 仅在后端本地加密保存**
@@ -32,7 +32,7 @@
 | ![AI 设置](docs/screenshots/desktop/desktop-ai-settings.png) | ![导入](docs/screenshots/mobile/mobile-import.png) |
 | ![视频收藏](docs/screenshots/desktop/desktop-integrations.png) | ![视频收藏](docs/screenshots/mobile/mobile-integrations.png) |
 
-全部 26 张验收截图（1280×900 桌面 / 390×844 移动）见 `docs/screenshots/`，
+全部 28 张验收截图（1280×900 桌面 / 390×844 移动）见 `docs/screenshots/`，
 `report.json` 记录了每个页面的横向溢出与控制台错误检查结果（均为 0）。
 
 ## 目录结构

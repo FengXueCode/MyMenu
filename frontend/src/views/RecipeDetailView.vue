@@ -7,6 +7,7 @@ import { categoriesApi } from '@/api/categories'
 import { ApiError } from '@/api/http'
 import { recipesApi } from '@/api/recipes'
 import AppIcon from '@/components/AppIcon.vue'
+import ConfirmDialog from '@/components/ConfirmDialog.vue'
 import EmptyState from '@/components/EmptyState.vue'
 import ModalSheet from '@/components/ModalSheet.vue'
 import RecipeForm from '@/components/RecipeForm.vue'
@@ -44,6 +45,8 @@ const playerOpen = ref(false)
 
 const editOpen = ref(false)
 const saving = ref(false)
+const deleteOpen = ref(false)
+const deleting = ref(false)
 
 const recipeId = computed(() => Number(route.params.id))
 const SERVINGS_KEY = computed(() => `menu:recipe-servings:${recipeId.value}`)
@@ -211,6 +214,21 @@ async function submitEdit(payload: RecipeUpsertInput): Promise<void> {
     toast.success('已经改好了')
   } finally {
     saving.value = false
+  }
+}
+
+/* --------------------------------- 删除 ---------------------------------- */
+
+async function confirmDelete(): Promise<void> {
+  if (!recipe.value || deleting.value) return
+  deleting.value = true
+  try {
+    await recipesApi.remove(recipe.value.id)
+    deleteOpen.value = false
+    toast.success('菜谱已删除')
+    await router.replace({ name: 'recipes', query: { mine: 'true' } })
+  } finally {
+    deleting.value = false
   }
 }
 
@@ -385,6 +403,15 @@ void loadCategories()
             >
               <AppIcon name="edit" :size="14" />
               编辑
+            </button>
+            <button
+              v-if="isMine"
+              type="button"
+              class="hidden h-11 items-center gap-1.5 rounded-full border border-tomato/35 bg-card px-3.5 text-[12.5px] text-tomato-deep transition hover:bg-tomato-soft md:inline-flex"
+              @click="deleteOpen = true"
+            >
+              <AppIcon name="trash" :size="14" />
+              删除
             </button>
           </div>
         </div>
@@ -669,6 +696,15 @@ void loadCategories()
           编辑
         </button>
         <button
+          v-if="isMine"
+          type="button"
+          class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-tomato/40 bg-card text-tomato-deep active:scale-[0.98]"
+          aria-label="删除菜谱"
+          @click="deleteOpen = true"
+        >
+          <AppIcon name="trash" :size="16" />
+        </button>
+        <button
           v-else
           type="button"
           class="inline-flex h-12 flex-1 items-center justify-center gap-1.5 rounded-full bg-tomato text-[13px] font-medium text-paper shadow-[0_3px_0_rgba(176,59,41,0.5)] active:translate-y-px disabled:opacity-60"
@@ -698,6 +734,16 @@ void loadCategories()
         @submit="submitEdit"
       />
     </ModalSheet>
+
+    <ConfirmDialog
+      v-model="deleteOpen"
+      title="删除这道菜？"
+      :message="`「${recipe?.title ?? '这道菜'}」删除后不可恢复，但它不会影响已保存的今日菜单记录。`"
+      confirm-text="删除"
+      tone="danger"
+      :loading="deleting"
+      @confirm="confirmDelete"
+    />
   </div>
 </template>
 
